@@ -21,6 +21,11 @@ const users: TUsers = {
     uname: "leerob",
     password: "123",
   },
+  5: {
+    id: 5,
+    uname: "Pedro",
+    password: "123",
+  },
 };
 
 const posts: TPosts = {
@@ -44,6 +49,16 @@ const posts: TPosts = {
     subgroup: "coding",
     timestamp: 1642611742010,
   },
+  103: {
+    id: 103,
+    title: "Just some random post",
+    link: "https://google.ca",
+    description:
+      "Just a mock post",
+    creator: 3,
+    subgroup: "coding",
+    timestamp: 1642611742010,
+  },
 };
 
 const comments: TComments = {
@@ -52,6 +67,20 @@ const comments: TComments = {
     post_id: 102,
     creator: 1,
     description: "Actually I learned a lot",
+    timestamp: 1642691742010,
+  },
+  9002: {
+    id: 9002,
+    post_id: 103,
+    creator: 2,
+    description: "A comment about post 103",
+    timestamp: 16426917422010,
+  },
+  9004: {
+    id: 9004,
+    post_id: 102,
+    creator: 3,
+    description: "Just a mock comment to test",
     timestamp: 1642691742010,
   },
 };
@@ -172,7 +201,7 @@ function addComment(post_id: number, creator: number, description: string) {
   let id = Math.max(...Object.keys(comments).map(Number)) + 1;
   let comment = {
     id,
-    post_id: Number(post_id),
+    post_id: post_id,
     creator: Number(creator),
     description,
     timestamp: Date.now(),

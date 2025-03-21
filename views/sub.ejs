@@ -17,9 +17,15 @@
         <h1>Sub Posts</h1>
         <a role="button" href="/posts">Home</a>
       </div>
-      <div>
-        <p>Implement this page yourself. It is from sub.ejs</p>
-      </div>
+      <% decoratedPosts.forEach((post) => { %>
+        <div class="individualPost">
+          <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
+          <p><%= post.description %></p>
+          <!-- comments must have description, creator and timestamp -->
+          <hr>
+
+        </div>
+      <% }) %>
     </main>
   </body>
 </html>

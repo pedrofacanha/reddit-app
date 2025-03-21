@@ -24,13 +24,15 @@
       <h2>Welcome, <%= user?.uname || "Visitor" %>.</h2>
       <div>
         <p>All Posts</p>
-        <% posts.forEach(post => { %>
+        <% for (let post of posts) { %>
           <div class="individualPost">
             <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
             <p><%= post.description %></p>
-            <p>Created by: <%= allCreators[post.creator].uname %></p>
+            <p>Created by: <%= post.creator.uname %></p>
+            <hr>
           </div>
-        <% }) %>
+        <% } %>
+        
 
       <div>
         <a href="/subs/list">Subgroups</a>

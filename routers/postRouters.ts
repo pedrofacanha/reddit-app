@@ -1,19 +1,18 @@
 import express from "express";
 const router = express.Router();
 import { ensureAuthenticated } from "../middleware/checkAuth";
-import { getPosts } from "../fake-db";
-import { getUserById } from "../controller/userController"
+import { getPost, getPosts, decoratePost, addComment, getUser } from "../fake-db";
+import { TUsers } from "../types";
 
 router.get("/", async (req, res) => {
   const posts = await getPosts(20);
   const user = await req.user; // created by passport
-  const sessionObj = await req.session; // created by express-session
-  let allCreators: { [key: number]: any } = {};
-
-  for (let post of posts) {
-      allCreators[post.creator] = await getUserById(post.creator);
+  const decoratedPosts = [];
+  for (let post of posts){
+    let currentPost = decoratePost(post);
+    decoratedPosts.push(currentPost);
   }
-  res.render("posts", { posts, user, allCreators });
+  res.render("posts", { user, posts: decoratedPosts });
 });
 
 router.get("/create", ensureAuthenticated, (req, res) => {
@@ -25,8 +24,12 @@ router.post("/create", ensureAuthenticated, async (req, res) => {
 });
 
 router.get("/show/:postid", async (req, res) => {
-  // ⭐ TODO
-  res.render("individualPost");
+  // TODO: show post title, post link, timestamp and creator
+  // get id parameter
+  const { postid } = req.params;
+  // get post by id
+  const currentPost = getPost(Number(postid));
+  res.render("individualPost", { post: currentPost });
 });
 
 router.get("/edit/:postid", ensureAuthenticated, async (req, res) => {
@@ -49,7 +52,21 @@ router.post(
   "/comment-create/:postid",
   ensureAuthenticated,
   async (req, res) => {
-    // ⭐ TODO
+    // TODO: create a new comment and display description, username and date
+    const description = req.body.description;
+    const user = await req.user;
+    const userId = Number(user.id);
+    const postId = Number(req.params.postid);
+    const comment = addComment(postId, user.id, description);
+    const currentPost = getPost(postId);
+    res.render("individualPost", { post: currentPost });
+  }
+);
+router.post(
+  "/comment-delete/:postid",
+  ensureAuthenticated,
+  async (req, res) => {
+    // TODO: after hitting the button, comment is deleted
   }
 );
 

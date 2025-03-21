@@ -17,8 +17,14 @@
         <h1>Sub Groups</h1>
         <a role="button" href="/posts">Home</a>
       </div>
+      
+      <% subTypes.forEach(type => { %>
+        <ul>
+          <li><a href="/subs/show/<%= type %>"><%= type %></a></li>
+        </ul>
+      <% }) %>
+      
       <div>
-        <p>Implement this page yourself. It is from subs.ejs</p>
       </div>
     </main>
   </body>

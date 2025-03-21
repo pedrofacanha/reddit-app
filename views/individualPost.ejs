@@ -17,8 +17,37 @@
         <h1>View Post</h1>
         <a role="button" href="/posts">Home</a>
       </div>
-      <div>
-        <p>Implement this page yourself. It is from individualPost.ejs</p>
+      <div class="individualPost">
+        <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
+            <p><%= post.description %></p>
+            <p><a href="<%= post.link %>"><%= post.link %></p></a>
+            <p>Created by: <%= post.creator.uname %></p>
+            <p><%= new Date(post.timestamp).toLocaleString('en-US') %></p>
+            <hr>
+            <form action="/posts/comment-create/<%= post.id %>" method="POST">
+              <input 
+              type="text"
+              name="description"
+              id="description"
+              placeholder="Type here your comment"
+              >
+              <button style="width:100px; margin-left:auto">Send</button>
+            </form>
+            <hr>
+            <p><em><strong>Comments</strong></em>:</p>
+            <% if(!post.comments || post.comments.length === 0) { %>
+              <p>No comments for this post yet.</p>
+              <% } else { %>
+                <% post.comments.forEach(comment => { %>
+                  <form action="/posts/comment-delete/" method="POST">
+                    <p><strong>Description: </strong> <%= comment.description %></p>
+                    <p><strong>Created by: </strong> <%= comment.creator.uname %></p>
+                    <p><strong>Date: </strong><%= new Date(comment.timestamp).toLocaleString('en-US') %></p>
+                    <button style="width:100px; margin-left:auto; background-color:red">Delete</button>
+                  </form>
+                  <hr>
+              <% }) %>
+          <% } %>
       </div>
     </main>
   </body>
