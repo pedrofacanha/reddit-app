@@ -11,13 +11,32 @@ router.get("/list", async (req, res) => {
 });
 
 router.get("/show/:subname", async (req, res) => {
-  const { subname } = req.params; // post's subgroup
-  const posts = getPosts(20, subname); // get "n" number of posts by their subgroup
-  const decoratedPosts = []; // initialize empty array to store decorated posts
+  try{
+    // post's subgroup
+  const { subname } = req.params;
+
+  // get "n" number of posts by their subgroup
+  const posts = getPosts(20, subname);
+
+  // initialize empty array to store decorated posts
+  const decoratedPosts = [];
+
+  // check if any post exist
+  if(!posts || posts.length === 0){
+    const errMessage = "Post not found"
+    console.log(errMessage);
+    res.status(400).send(errMessage).redirect("/");
+  }
+
+  // populate array with posts that matches sub
   for (let post of posts){
     decoratedPosts.push(decoratePost(post));
   }
-  res.render("sub", { decoratedPosts });
+
+  res.render("sub", { posts : decoratedPosts });
+  } catch (err) {
+    res.status(500).send(err).redirect("/");
+  }
 });
 
 export default router;

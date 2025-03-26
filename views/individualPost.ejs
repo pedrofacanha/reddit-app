@@ -39,11 +39,42 @@
               <p>No comments for this post yet.</p>
               <% } else { %>
                 <% post.comments.forEach(comment => { %>
-                  <form action="/posts/comment-delete/" method="POST">
-                    <p><strong>Description: </strong> <%= comment.description %></p>
-                    <p><strong>Created by: </strong> <%= comment.creator.uname %></p>
-                    <p><strong>Date: </strong><%= new Date(comment.timestamp).toLocaleString('en-US') %></p>
-                    <button style="width:100px; margin-left:auto; background-color:red">Delete</button>
+                  <form action="/posts/comment-delete/<%= post.id %>" method="POST">
+                    <input 
+                    type="hidden" 
+                    name="id" 
+                    value="<%= comment.id %>"
+                    >
+                    <label for="description">Description: </label>
+                    <input 
+                    type="text"
+                    name="description"
+                    id="description"
+                    value="<%= comment.description %>"
+                    readonly
+                    style="border:transparent"
+                    >
+                    <label for="creator">Created By: </label>
+                    <input 
+                    type="text"
+                    name="user"
+                    id="user"
+                    value="<%= comment.creator.uname %>"
+                    readonly
+                    style="border:transparent"
+                    >
+                    <label for="date">Date: </label>
+                    <input 
+                    type="datetime"
+                    name="date"
+                    id="date"
+                    value="<%= new Date(comment.timestamp).toLocaleString('en-US') %>"
+                    readonly
+                    style="border:transparent"
+                    >
+                    <% if(user && user.uname === comment.creator.uname) { %>
+                      <button type="submit" style="width:100px; margin-left:auto; background-color:red">Delete</button>
+                    <% } %>
                   </form>
                   <hr>
               <% }) %>

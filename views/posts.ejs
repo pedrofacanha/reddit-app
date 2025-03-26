@@ -29,13 +29,18 @@
             <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
             <p><%= post.description %></p>
             <p>Created by: <%= post.creator.uname %></p>
+
+            <% if(user && user.uname === post.creator.uname){ %>
+              <a role="button" style="background-color:coral" href="/posts/edit/<%= post.id %>">Edit Post</a>
+              <a role="button" style="background-color:red" href="/posts/deleteconfirm/<%= post.id %>">Delete Post</a>
+            <% } %>
             <hr>
           </div>
         <% } %>
-        
 
       <div>
         <a href="/subs/list">Subgroups</a>
+        <hr>
       </div>
 
       <div>

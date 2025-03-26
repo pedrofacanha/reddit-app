@@ -17,7 +17,30 @@
         <h1>Create Post</h1>
         <a role="button" href="/posts">Home</a>
       </div>
-      <p>Implement this yourself. It comes from createPost.ejs</p>
+      <form action="/posts/create" method="POST">
+        <input type="text"
+        name="title"
+        id="title"
+        placeholder="Please enter a title"
+        subgroup="Please enter the topic subgroup"
+        >
+        <input type="text"
+        name="link"
+        id="link"
+        placeholder="Please enter the link about the post"
+        subgroup="Please enter the topic subgroup"
+        >
+        <input type="text"
+        name="description"
+        id="description"
+        placeholder="Please enter the description"
+        >
+        <input type="text"
+        name="subgroup"
+        id="subgroup"
+        placeholder="Please enter the topic subgroup"
+        >
+        <button type="submit">Submit</button>
     </main>
   </body>
 </html>

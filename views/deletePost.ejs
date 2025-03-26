@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
+    />
+    <link href="/css/style.css" rel="stylesheet" />
+    <title>Delete Post</title>
+  </head>
+  <body>
+    <main>
+      <div class="authOptions">
+        <h1>Delete Post <%= post.id %></h1>
+        <a role="button" href="/posts">Home</a>
+      </div>
+        <div class="individualPost">
+            <!-- if confirms, redirect back to the sub that post belongs to -->
+            <form action="/posts/delete/<%= post.id %>" method="POST">
+                <p>Are you sure about deleting this post?</p>
+                <button type="submit" style="background-color:green">Yes</button>
+            </form>
+            <!-- if cancelled, goes back to the post's view page -->
+            <form action="/posts/show/<%= post.id %>" method="GET">
+                <button type="submit" style="background-color:red">No</button>
+            </form>
+        </div>
+    </main>
+</body>

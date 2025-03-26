@@ -21,11 +21,6 @@ const users: TUsers = {
     uname: "leerob",
     password: "123",
   },
-  5: {
-    id: 5,
-    uname: "Pedro",
-    password: "123",
-  },
 };
 
 const posts: TPosts = {
@@ -172,6 +167,7 @@ function editPost(
     link?: string;
     description?: string;
     subgroup?: string;
+    timestamp?: number;
   } = {}
 ) {
   let post = posts[post_id];
@@ -187,10 +183,16 @@ function editPost(
   if (changes.subgroup) {
     post.subgroup = changes.subgroup;
   }
+  if (changes.timestamp) {
+    post.timestamp = changes.timestamp;
+  }
 }
 
 function deletePost(post_id: number) {
   delete posts[post_id];
+}
+function deleteComment(commentId: number){
+  delete comments[commentId];
 }
 
 function getSubs() {
@@ -222,4 +224,5 @@ export {
   getSubs,
   addComment,
   decoratePost,
+  deleteComment
 };
