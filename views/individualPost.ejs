@@ -19,66 +19,71 @@
       </div>
       <div class="individualPost">
         <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
-            <p><%= post.description %></p>
-            <p><a href="<%= post.link %>"><%= post.link %></p></a>
-            <p>Created by: <%= post.creator.uname %></p>
-            <p><%= new Date(post.timestamp).toLocaleString('en-US') %></p>
-            <hr>
-            <form action="/posts/comment-create/<%= post.id %>" method="POST">
-              <input 
-              type="text"
-              name="description"
-              id="description"
-              placeholder="Type here your comment"
-              >
-              <button style="width:100px; margin-left:auto">Send</button>
+        <p><%= post.description %></p>
+        <p><a href="<%= post.link %>"><%= post.link %></a></p>
+        <p>Created by: <%= post.creator.uname %></p>
+        <p><%= new Date(post.timestamp).toLocaleString('en-US') %></p>
+        <hr/>
+        <form action="/posts/comment-create/<%= post.id %>" method="POST">
+          <input
+            type="text"
+            name="description"
+            id="description"
+            placeholder="Type here your comment"
+          />
+          <button style="width:100px; margin-left:auto">Send</button>
+        </form>
+        <hr/>
+        <p><em><strong>Comments</strong></em>:</p>
+        <% if (!post.comments || post.comments.length === 0) { %>
+          <p>No comments for this post yet.</p>
+        <% } else { %>
+          <% post.comments.forEach(comment => { %>
+            <form action="/posts/comment-delete/<%= post.id %>" method="POST">
+              <input
+                type="hidden"
+                name="id"
+                value="<%= comment.id %>"
+              />
+              <label for="description">Description: </label>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                value="<%= comment.description %>"
+                readonly
+                style="border:transparent"
+              />
+              <label for="creator">Created By: </label>
+              <input
+                type="text"
+                name="user"
+                id="user"
+                value="<%= comment.creator.uname %>"
+                readonly
+                style="border:transparent"
+              />
+              <label for="date">Date: </label>
+              <input
+                type="datetime"
+                name="date"
+                id="date"
+                value="<%= new Date(comment.timestamp).toLocaleString('en-US') %>"
+                readonly
+                style="border:transparent"
+              />
+              <% if (user && user.uname === comment.creator.uname) { %>
+                <button
+                  type="submit"
+                  style="width:100px; margin-left:auto; background-color:red"
+                >
+                Delete
+                </button>
+              <% } %>
             </form>
-            <hr>
-            <p><em><strong>Comments</strong></em>:</p>
-            <% if(!post.comments || post.comments.length === 0) { %>
-              <p>No comments for this post yet.</p>
-              <% } else { %>
-                <% post.comments.forEach(comment => { %>
-                  <form action="/posts/comment-delete/<%= post.id %>" method="POST">
-                    <input 
-                    type="hidden" 
-                    name="id" 
-                    value="<%= comment.id %>"
-                    >
-                    <label for="description">Description: </label>
-                    <input 
-                    type="text"
-                    name="description"
-                    id="description"
-                    value="<%= comment.description %>"
-                    readonly
-                    style="border:transparent"
-                    >
-                    <label for="creator">Created By: </label>
-                    <input 
-                    type="text"
-                    name="user"
-                    id="user"
-                    value="<%= comment.creator.uname %>"
-                    readonly
-                    style="border:transparent"
-                    >
-                    <label for="date">Date: </label>
-                    <input 
-                    type="datetime"
-                    name="date"
-                    id="date"
-                    value="<%= new Date(comment.timestamp).toLocaleString('en-US') %>"
-                    readonly
-                    style="border:transparent"
-                    >
-                    <% if(user && user.uname === comment.creator.uname) { %>
-                      <button type="submit" style="width:100px; margin-left:auto; background-color:red">Delete</button>
-                    <% } %>
-                  </form>
-                  <hr>
-              <% }) %>
-          <% } %>
+            <hr />
+          <% }) %>
+        <% } %>
       </div>
     </main>
   </body>

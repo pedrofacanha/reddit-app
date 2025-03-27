@@ -35,28 +35,21 @@ router.post("/create", ensureAuthenticated, async (req, res) => {
     if (!link || !description || typeof subgroup !== "string") {
       const errMessage = "Form must have a link, description, and a valid subgroup"
 
-      // display error message in the console if anything goes wrong
-      console.error(errMessage);
+      // if creation goes wrong, display error message
+      console.log(errMessage);
 
-      // send an HTML response with an alert and redirect
-      return res.status(400).send(`
-        <script>
-          alert("${errMessage}");
-          setTimeout(() => window.location = "/posts/create", 100);
-        </script>
-      `);
+      // redirect user if creation is unsuccessful
+      return res.redirect("/");
     }
 
-    // add to database
+    // add created post to database
     const newPost = db.addPost(title, link, id, description, subgroup);
-    const updatedPost = db.decoratePost(newPost);
+    const post = db.decoratePost(newPost);
 
-    res.render("individualPost", { post: updatedPost });
+    res.render("individualPost", { post });
   } catch (error) {
-    console.error("Something went wrong in /router/post/create:", error);
-    
-    // redirect to main page and log the error
-    res.status(500).redirect("/"); 
+    console.error("Something went wrong in /posts/create:", error);
+    res.status(500).send("An unexpected error occurred.");
     }
 });
 
@@ -64,14 +57,14 @@ router.get("/show/:postid", async (req, res) => {
   // TODO: show post title, post link, timestamp and creator
   // fetch user
   const user = await req.user;
-
+  console.log(req.query);
   // fetch post id
   const { postid } = req.params;
 
   // fetch post by id
   const currentPost = db.getPost(Number(postid));
 
-  res.render("individualPost", { post : currentPost, user });
+  res.render("individualPost", { user, post : currentPost });
 });
 
 router.get("/edit/:postid", ensureAuthenticated, async (req, res) => {
@@ -86,40 +79,44 @@ router.get("/edit/:postid", ensureAuthenticated, async (req, res) => {
 router.post("/edit/:postid", ensureAuthenticated, async (req, res) => {
   // TODO: send req.body with data edited to the respective form
   try {
-    // fetch all inputs
+    // fetch data
     const { title, link, description, subgroup } = req.body;
     const postid = Number(req.params.postid);
+
+    // fetch user
+    const user = await req.user;
 
     // update timestamp
     const timestamp = Date.now();
 
-    // use editPost()
+    // editPost()
     db.editPost(postid, { title,link,description,subgroup,timestamp });
 
-    // render ejs file if valid. if not, redirect to homepage
+    // render ejs if post is valid. if not, redirect to homepage
     const post = db.getPost(postid);
     if(!post){
-      res.status(404).send("Post not found").redirect("/");
+      console.log("Post not found");
+      return res.redirect("/");
     }
 
-    res.render("individualPost", { post });
-  } catch (err) {
-    console.error("Something went wrong");
-    res.status(500).redirect("/");
+    res.render("individualPost", { post, user });
+  } catch (error) {
+      console.error("Error in /edit/:postid:", error);
+      res.status(500).send("An unexpected error occurred.");
   }
 });
 
 router.get("/deleteconfirm/:postid", ensureAuthenticated, async (req, res) => {
-  // TODO: display page that asks user if confirms deletion
+  // TODO: display page that asks if user deletion
   try {
     // fetch data
     const { postid } = req.params;
     const post = db.getPost(Number(postid));
 
     res.render("deletePost", { post });
-  } catch (err) {
-    console.error("Something unexpected happened.");
-    res.status(500).redirect("/");
+  } catch (error) {
+      console.error("Error in /deleteconfirm/:postid:", error);
+      res.status(500).send("An unexpected error occurred.");
   }
 });
 
@@ -130,18 +127,21 @@ router.post("/delete/:postid", ensureAuthenticated, async (req, res) => {
     // fetch post
     const post = db.getPost(Number(postid));
 
-    // validate post
+
+    // validate post and delete it
     if (post) {
       
       db.deletePost(Number(postid));
       
       // redirect to the subgroup page
-      res.render("sub", { posts : undefined});
+      res.redirect(`/subs/show/${post.subgroup}`);
     } else {
-      res.status(404).send("Post not found");
+      console.log("Post not found");
+      return res.redirect("/");
     }
-  } catch (err) {
-    res.status(500).redirect("/");
+  } catch (error) {
+      console.error("Error in /delete/:postid:", error);
+      res.status(500).send("An unexpected error occurred.");
   }
 });
 
@@ -151,7 +151,7 @@ router.post(
   ensureAuthenticated,
   async (req, res) => {
     // TODO: create a new comment and display description, username and date
-    // retrieve info from user
+    // fetch info from user
     const description = req.body.description;
     const user = await req.user;
     const userId = Number(user?.id);
@@ -162,7 +162,8 @@ router.post(
     // validate post
     const currentPost = db.getPost(postId);
     if(!currentPost){
-      res.status(404).send("Post not found");
+      console.log("Post not found")
+      return res.redirect("/");
     }
 
     res.render("individualPost", { post : currentPost, user });
@@ -172,21 +173,26 @@ router.post(
   "/comment-delete/:postid",
   ensureAuthenticated,
   async (req, res) => {
-    // fetch data
-    const data = req.body;
-    const user = await req.user;
-    const postId = Number(req.params.postid);
+    try {
+      // fetch data
+      const data = req.body;
+      const postId = Number(req.params.postid);
 
-    // fetch comment id
-    const commentId = Number(data.id);
+      // fetch comment ID
+      const commentId = Number(data.id);
 
-    db.deleteComment(commentId);
-    
-    // render updated post
-    const updatedPost = db.getPost(postId);
+      // delete the comment
+      db.deleteComment(commentId);
 
-    res.render("individualPost", { post: updatedPost, user });
+      res.redirect(`/posts/show/${postId}`);
+    } catch (error) {
+      console.error("Error in /comment-delete/:postid:", error);
+      res.status(500).send("An unexpected error occurred.");
+    }
   }
 );
 
+router.post("/vote/:postid", ensureAuthenticated, async (req, res) => {
+ 
+})
 export default router;

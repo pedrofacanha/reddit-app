@@ -5,9 +5,9 @@ import express from "express";
 const router = express.Router();
 
 router.get("/list", async (req, res) => {
-  const subTypes = getSubs(); // retrieve array of subnames
-  subTypes.sort();
-  res.render("subs", { subTypes });
+  const subgroups = getSubs(); // retrieve array of subnames
+  subgroups.sort();
+  res.render("subs", { subgroups });
 });
 
 router.get("/show/:subname", async (req, res) => {
@@ -23,9 +23,9 @@ router.get("/show/:subname", async (req, res) => {
 
   // check if any post exist
   if(!posts || posts.length === 0){
-    const errMessage = "Post not found"
-    console.log(errMessage);
-    res.status(400).send(errMessage).redirect("/");
+    const errMessage = `No posts within the "${subname}" subgroup`;
+    console.error(errMessage);
+    return res.redirect("/");
   }
 
   // populate array with posts that matches sub
@@ -34,8 +34,9 @@ router.get("/show/:subname", async (req, res) => {
   }
 
   res.render("sub", { posts : decoratedPosts });
-  } catch (err) {
-    res.status(500).send(err).redirect("/");
+  } catch (error) {
+      console.error("Error in /show/:subname:", error);
+      res.status(500).send("An unexpected error occurred.");
   }
 });
 

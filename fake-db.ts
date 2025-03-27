@@ -218,6 +218,7 @@ export {
   getUserByUsername,
   getPosts,
   getPost,
+  getVotesForPost,
   addPost,
   editPost,
   deletePost,

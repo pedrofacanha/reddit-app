@@ -16,15 +16,13 @@
       <div class="authOptions">
         <h1>Sub Groups</h1>
         <a role="button" href="/posts">Home</a>
-      </div>
-      
-      <% subTypes.forEach(type => { %>
-        <ul>
-          <li><a href="/subs/show/<%= type %>"><%= type %></a></li>
-        </ul>
-      <% }) %>
-      
-      <div>
+        </div>
+          <% subgroups.forEach(sub => { %>
+            <ul>
+              <li><a href="/subs/show/<%= sub %>"><%= sub %></a></li>
+            </ul>
+          <% }) %>
+        <div>
       </div>
     </main>
   </body>
