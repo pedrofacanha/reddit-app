@@ -193,6 +193,6 @@ router.post(
 );
 
 router.post("/vote/:postid", ensureAuthenticated, async (req, res) => {
- 
+  
 })
 export default router;
