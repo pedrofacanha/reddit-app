@@ -219,9 +219,10 @@ router.post("/vote/:postid", ensureAuthenticated, async(req, res)=>{
   const vote = Number(req.body.setvoteto);
 
   // TODO: update votes object in the database => implement function that updates votes object in the database
+  // * first condition
     // add up 1 to existing user vote
       // else: create user in votes object with a value of 1
-    // * second condition
+  // * second condition
     // subtract 1 from existing user.value (vote)
       // if user.value === 1 => user.value = 0;
       // if user.value === 2 => user.value = 1 and so on...
