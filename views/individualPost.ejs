@@ -23,7 +23,39 @@
         <p><a href="<%= post.link %>"><%= post.link %></a></p>
         <p>Created by: <%= post.creator.uname %></p>
         <p><%= new Date(post.timestamp).toLocaleString('en-US') %></p>
-        <hr/>
+        <form action="/posts/vote/<%= post.id %>" method="POST" class="voteForm">
+          <button
+            class="voteButton upvote"
+            name="setvoteto"
+            value="1"
+            type="submit"
+            <% for(let vote of post.votes) { %>
+              <% if(vote.user_id === user?.id && vote.value === 1) { %>
+                  disabled
+             <% } %>
+        <% } %>
+        >
+            👍
+          </button>
+          <button
+            class="voteButton downvote"
+            name="setvoteto"
+            value="-1"
+            type="submit"
+            <% for(let vote of post.votes) { %>
+              <% if(vote.user_id === user?.id && vote.value === -1) { %>
+                  disabled
+             <% } %>
+        <% } %>
+        >
+            👎
+          </button>
+        </form>
+          <% let totalVotes = 0; %>
+          <% for(let vote of post.votes) { %>
+              <% totalVotes += vote.value; %>
+         <% } %>
+         <p>Total Votes: <%= totalVotes %></p>
         <form action="/posts/comment-create/<%= post.id %>" method="POST">
           <input
             type="text"

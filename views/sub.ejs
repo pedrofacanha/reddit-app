@@ -19,15 +19,48 @@
       </div>
       <!-- check if there's any group within the subgroup -->
       <% if (posts && posts.length > 0) { %>
-        <% posts.forEach((post) => { %>
+        <% for (let post of posts) { %>
           <div class="individualPost">
             <!-- comments must have description, creator, and timestamp -->
             <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
             <p><%= post.description %></p>
+            <form action="/posts/vote/<%= post.id %>" method="POST" class="voteForm">
+              <button
+                class="voteButton upvote"
+                name="setvoteto"
+                value="1"
+                type="submit"
+                <% for(let vote of post.votes) { %>
+                  <% if(vote.user_id === user?.id && vote.value === 1) { %>
+                      disabled
+                 <% } %>
+            <% } %>
+              >
+                👍
+              </button>
+              <button
+                class="voteButton downvote"
+                name="setvoteto"
+                value="-1"
+                type="submit"
+                <% for(let vote of post.votes) { %>
+                  <% if(vote.user_id === user?.id && vote.value === -1) { %>
+                      disabled
+                 <% } 
+            <% } %>
+              </button>
+            </form>
+              <% let totalVotes = 0; %>
+              <% for (let vote of post.votes) { %>
+                <% totalVotes += vote.value; %>
+              <% } %>
+              <p>Total Votes: <%= totalVotes %></p>
             <hr>
           </div>
-          <% }) %>
-          <% } %>
+        <% } %>
+      <% } else { %>
+        <p>No posts available in this subgroup.</p>
+      <% } %>
     </main>
   </body>
 </html>

@@ -8,10 +8,13 @@ router.get("/", async (req, res) => {
   const posts = await db.getPosts(20);
   const user = await req.user;
 
+  // variable to store modified post
+  let currentPost;
+
   // initialize empty array to store modified posts
   const decoratedPosts = [];
   for (let post of posts){
-    let currentPost = db.decoratePost(post);
+    currentPost = db.decoratePost(post);
     decoratedPosts.push(currentPost);
   }
 
@@ -55,16 +58,29 @@ router.post("/create", ensureAuthenticated, async (req, res) => {
 
 router.get("/show/:postid", async (req, res) => {
   // TODO: show post title, post link, timestamp and creator
-  // fetch user
+  try {
+    // fetch user
   const user = await req.user;
-  console.log(req.query);
   // fetch post id
   const { postid } = req.params;
 
   // fetch post by id
   const currentPost = db.getPost(Number(postid));
+  if(!currentPost){
+    console.log(`Post ${postid} not found`);
+    return res.redirect("/");
+  }
+
+  // update total votes
+  currentPost.votes = db.getVotesForPost(Number(postid));
+  console.log(currentPost.votes);
 
   res.render("individualPost", { user, post : currentPost });
+  } catch (err) {
+
+    console.error("Error in /posts/show/:postid: ", err);
+    res.status(500).send("An unexpected error ocurred.");
+  }
 });
 
 router.get("/edit/:postid", ensureAuthenticated, async (req, res) => {
@@ -192,7 +208,26 @@ router.post(
   }
 );
 
-router.post("/vote/:postid", ensureAuthenticated, async (req, res) => {
-  
-})
+router.post("/vote/:postid", ensureAuthenticated, async(req, res)=>{
+  // get post.id
+  const postId = Number(req.params.postid);
+
+  // fetch user
+  const user = await req.user;  
+
+  // fetch button value
+  const vote = Number(req.body.setvoteto);
+
+  // TODO: update votes object in the database => implement function that updates votes object in the database
+    // add up 1 to existing user
+      // else: create user in votes object with a value of 1
+    // * ALSO:
+    // subtract 1 from existing user.value
+      // if user.value === 1 => user.value = 0;
+      // if user.value === 2 => user.value = 1 and so on...
+    // else: create user in votes object with a value of -1
+    db.updateVote(Number(user?.id), Number(postId), vote)
+
+  res.redirect(`/posts/show/${postId}`);
+});
 export default router;

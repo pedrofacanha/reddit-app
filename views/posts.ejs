@@ -29,14 +29,41 @@
             <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
             <p><%= post.description %></p>
             <p>Created by: <%= post.creator.uname %></p>
-            <form action="/posts/vote/<%= post.id %>" method="POST">
-              <button role="button" name="setvoteto" value="1" type="submit" style="background-color:black; width:70px">👍</button>
-              <button role="button" name="setvoteto" value="-1" type="submit" style="background-color:black; width:70px">👎</button>
-            </form>
-            <% if(user && user.uname === post.creator.uname){ %>
-              <a role="button" style="background-color:coral" href="/posts/edit/<%= post.id %>">Edit Post</a>
-              <a role="button" style="background-color:red" href="/posts/deleteconfirm/<%= post.id %>">Delete Post</a>
-            <% } %>
+            <% if(user){ %>
+              <form action="/posts/vote/<%= post.id %>" method="POST" class="voteForm">
+                <button
+                  class="voteButton upvote"
+                  name="setvoteto"
+                  value="1"
+                  type="submit"
+                  <% for(let vote of post.votes) { %>
+                     <% if(vote.user_id === user?.id && vote.value === 1) { %> disabled <% } %>
+               <% } %>
+                >
+                  👍
+                </button>
+                <button
+                  class="voteButton downvote"
+                  name="setvoteto"
+                  value="-1"
+                  type="submit"
+                  <% for(let vote of post.votes) { %>
+                    <% if(vote.user_id === user?.id && vote.value === -1) { %> disabled <% } %>
+              <% } %>
+                >
+                  👎
+                </button>
+              </form>
+                <% let totalVotes = 0; %>
+                <% for(let vote of post.votes){ %>
+                <% totalVotes += vote.value %>
+                <% } %>
+                <p>Total Votes: <%= totalVotes %></p>
+              <% } %>
+                <% if(user && user.uname === post.creator.uname) { %>
+                <a role="button" style="background-color:coral" href="/posts/edit/<%= post.id %>">Edit Post</a>
+                <a role="button" style="background-color:red" href="/posts/deleteconfirm/<%= post.id %>">Delete Post</a>
+              <% } %>
             <hr>
           </div>
         <% } %>

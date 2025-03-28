@@ -44,16 +44,6 @@ const posts: TPosts = {
     subgroup: "coding",
     timestamp: 1642611742010,
   },
-  103: {
-    id: 103,
-    title: "Just some random post",
-    link: "https://google.ca",
-    description:
-      "Just a mock post",
-    creator: 3,
-    subgroup: "coding",
-    timestamp: 1642611742010,
-  },
 };
 
 const comments: TComments = {
@@ -63,13 +53,6 @@ const comments: TComments = {
     creator: 1,
     description: "Actually I learned a lot",
     timestamp: 1642691742010,
-  },
-  9002: {
-    id: 9002,
-    post_id: 103,
-    creator: 2,
-    description: "A comment about post 103",
-    timestamp: 16426917422010,
   },
   9004: {
     id: 9004,
@@ -110,6 +93,19 @@ function getVotesForPost(post_id: number) {
   return votes.filter((vote) => vote.post_id === post_id);
 }
 
+function updateVote(user_id: number, post_id: number, value: number) {
+  // get current post votes
+  const postVotes = getVotesForPost(post_id);
+
+  // check if user has voted already
+  const hasVoted = postVotes.find(vote => vote.user_id === user_id);
+
+  if (hasVoted) {
+    hasVoted.value += value;
+  } else {
+    votes.push({ user_id, post_id, value });
+  }
+}
 function decoratePost(post: TPost) {
   const newPost = {
     ...post,
@@ -121,7 +117,6 @@ function decoratePost(post: TPost) {
   };
   return newPost;
 }
-
 /**
  * @param {*} n how many posts to get, defaults to 5
  * @param {*} sub which sub to fetch, defaults to all subs
@@ -225,5 +220,6 @@ export {
   getSubs,
   addComment,
   decoratePost,
-  deleteComment
+  deleteComment,
+  updateVote
 };
