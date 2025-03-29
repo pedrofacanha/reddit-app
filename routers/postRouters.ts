@@ -215,10 +215,10 @@ router.post("/vote/:postid", ensureAuthenticated, async(req, res)=>{
   // fetch user
   const user = await req.user;  
 
-  // fetch button value
+  // fetch vote value
   const vote = Number(req.body.setvoteto);
 
-  // TODO: update votes object in the database => implement function that updates votes object in the database
+  // TODO: update votes object in the database => implement function
   // * first condition
     // add up 1 to existing user vote
       // else: create user in votes object with a value of 1

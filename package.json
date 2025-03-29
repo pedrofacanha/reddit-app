@@ -4,13 +4,10 @@
   "description": "## Introduction",
   "main": "index.js",
   "scripts": {
-    "start": "tsx watch --env-file .env app.ts",
-    "db": "npx prisma db push",
-    "studio": "npx prisma studio"
+    "start": "tsx watch --env-file .env app.ts"
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "@prisma/client": "^4.11.0",
     "body-parser": "^1.20.1",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",
@@ -27,7 +24,6 @@
     "@types/node": "^18.15.3",
     "@types/passport": "^1.0.14",
     "@types/passport-local": "^1.0.37",
-    "prisma": "^4.11.0",
     "tsx": "^4.19.3",
     "typescript": "^5.0.2"
   },
