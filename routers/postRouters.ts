@@ -34,6 +34,9 @@ router.post("/create", ensureAuthenticated, async (req, res) => {
     // retrieve user ID
     const id = Number(req.user?.id);
 
+    // fetch user
+    const user = req.user;
+
     // validate form data
     if (!link || !description || typeof subgroup !== "string") {
       const errMessage = "Form must have a link, description, and a valid subgroup"
@@ -49,7 +52,7 @@ router.post("/create", ensureAuthenticated, async (req, res) => {
     const newPost = db.addPost(title, link, id, description, subgroup);
     const post = db.decoratePost(newPost);
 
-    res.render("individualPost", { post });
+    res.render("individualPost", { post, user });
   } catch (error) {
     console.error("Something went wrong in /posts/create:", error);
     res.status(500).send("An unexpected error occurred.");
