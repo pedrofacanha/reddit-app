@@ -24,45 +24,47 @@
             <!-- comments must have description, creator, and timestamp -->
             <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
             <p><%= post.description %></p>
-            <form action="/posts/vote/<%= post.id %>" method="POST" class="voteForm">
-              <button
-                class="voteButton upvote"
-                name="setvoteto"
-                value="1"
-                type="submit"
-                <% for(let vote of post.votes) { %>
-                  <% if(vote.user_id === user?.id && vote.value === 1) { %>
-                    disabled
+            
+            <!-- only users allowed to vote and comment -->
+            <% if (user) { %>
+              <form action="/posts/vote/<%= post.id %>" method="POST" class="voteForm">
+                <button
+                  class="voteButton upvote"
+                  name="setvoteto"
+                  value="1"
+                  type="submit"
+                  <% for (let vote of post.votes) { %>
+                    <% if (vote.user_id === user?.id && vote.value === 1) { %>
+                      disabled
+                    <% } %>
                   <% } %>
-                <% } %>
-              >
-                👍
-              </button>
-              <button
-                class="voteButton downvote"
-                name="setvoteto"
-                value="-1"
-                type="submit"
-                <% for(let vote of post.votes) { %>
-                  <% if(vote.user_id === user?.id && vote.value === -1) { %>
-                    disabled
+                >
+                  👍
+                </button>
+                <button
+                  class="voteButton downvote"
+                  name="setvoteto"
+                  value="-1"
+                  type="submit"
+                  <% for (let vote of post.votes) { %>
+                    <% if (vote.user_id === user?.id && vote.value === -1) { %>
+                      disabled
+                    <% } %>
                   <% } %>
-                <% } %>
-              >
-                👎
-              </button>
-            </form>
-            <!-- display total number of votes per post -->
+                >
+                  👎
+                </button>
+              </form>
+              <!-- display total number of votes per post -->
               <% let totalVotes = 0; %>
               <% for (let vote of post.votes) { %>
                 <% totalVotes += vote.value; %>
               <% } %>
               <p>Total Votes: <%= totalVotes %></p>
+            <% } %>
             <hr>
           </div>
         <% } %>
-      <% } else { %>
-        <p>No posts available in this subgroup.</p>
       <% } %>
     </main>
   </body>

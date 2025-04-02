@@ -78,7 +78,6 @@ function debug() {
   console.log("votes", votes);
   console.log("==== DB DEBUGING ====");
 }
-
 function getUser(id: number) {
   return users[id];
 }
