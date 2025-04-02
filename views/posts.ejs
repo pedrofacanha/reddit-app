@@ -13,6 +13,7 @@
   </head>
   <body>
     <main>
+      
       <div class="authOptions">
         <h1>Homepage</h1>
         <% if (!user) { %>
@@ -21,14 +22,18 @@
         <a role="button" href="/auth/logout">Logout</a>
         <% } %>
       </div>
+
       <h2>Welcome, <%= user?.uname || "Visitor" %>.</h2>
+
       <div>
         <p>All Posts</p>
+
         <% for (let post of posts) { %>
           <div class="individualPost">
             <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
             <p><%= post.description %></p>
             <p>Created by: <%= post.creator.uname %></p>
+
             <% if(user){ %>
               <form action="/posts/vote/<%= post.id %>" method="POST" class="voteForm">
                 <button
@@ -54,6 +59,7 @@
                   👎
                 </button>
               </form>
+
                 <% let totalVotes = 0; %>
                 <% for(let vote of post.votes){ %>
                 <% totalVotes += vote.value %>
@@ -65,8 +71,10 @@
                 <a role="button" style="background-color:red" href="/posts/deleteconfirm/<%= post.id %>">Delete Post</a>
               <% } %>
             <hr>
+
           </div>
         <% } %>
+
 
       <div>
         <a href="/subs/list">Subgroups</a>
@@ -82,6 +90,8 @@
           </p>
         <% } %>
       </div>
+
+
     </main>
   </body>
 </html>

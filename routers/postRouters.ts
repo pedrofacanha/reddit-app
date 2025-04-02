@@ -63,7 +63,6 @@ router.get("/show/:postid", async (req, res) => {
   const user = await req.user;
   // fetch post id
   const { postid } = req.params;
-
   // fetch post by id
   const currentPost = db.getPost(Number(postid));
   if(!currentPost){

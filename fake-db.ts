@@ -101,7 +101,7 @@ function updateVote(user_id: number, post_id: number, value: number) {
   const hasVoted = postVotes.find(vote => vote.user_id === user_id);
 
   if (hasVoted) {
-    hasVoted.value += value;
+    hasVoted.value = value;
   } else {
     votes.push({ user_id, post_id, value });
   }

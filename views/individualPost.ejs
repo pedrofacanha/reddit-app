@@ -43,7 +43,7 @@
             value="-1"
             type="submit"
             <% for(let vote of post.votes) { %>
-              <% if(vote.user_id === user?.id && vote.value <= 0) { %>
+              <% if(vote.user_id === user?.id && vote.value === -1) { %>
                   disabled
              <% } %>
         <% } %>

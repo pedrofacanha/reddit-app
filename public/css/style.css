@@ -3,12 +3,18 @@
   justify-content: space-between;
   align-items: flex-start;
 }
+.voteForm {
+  display:flex;
+  gap: 10px;
+}
 .voteButton {
   background-color: black;
   color: white;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
+  width: 70px;
+  margin: 0;
 }
 
 .voteButton.upvote:disabled {
