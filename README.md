@@ -1,7 +1,7 @@
-Reddit-Style Multi-Page Web App with Express and Passport.js
+# Reddit-Style Multi-Page Web App with Express and Passport.js
 This project is a full-stack Node.js web application developed as a term assignment for COMP3012. Built with Express.js, EJS templating, and Passport.js for authentication, the app allows users to create and interact with posts in a subreddit-style structure — all without writing any front-end JavaScript.
 
-🔑 Key Features
+## 🔑 Key Features
 🔐 User login & logout via Passport.js
 
 🧵 Users can create posts, comments, and assign posts to custom "subgroups"
@@ -18,7 +18,7 @@ This project is a full-stack Node.js web application developed as a term assignm
 
 💾 Persistent storage using Prisma ORM
 
-📁 Main Routes
+## 📁 Main Routes
 - /login, /logout – User authentication
 
 - /posts/create, /posts/show/:id, /posts/edit/:id, /posts/delete/:id – Post management
@@ -31,7 +31,7 @@ This project is a full-stack Node.js web application developed as a term assignm
 
 - / – Homepage with the 20 most recent posts
 
-🧱 Tech Stack
+## 🧱 Tech Stack
 1. Backend: Node.js, Express.js, Passport.js
 
 2. Database: Prisma (with relational schema: Users, Posts, Comments, Subgroups)
@@ -42,7 +42,7 @@ This project is a full-stack Node.js web application developed as a term assignm
 
 5. Authentication: Session-based login/logout
 
-📌 Notes
+## 📌 Notes
 - No front-end JavaScript is used
 
 - Votes and actions cause full-page reloads (as specified)
