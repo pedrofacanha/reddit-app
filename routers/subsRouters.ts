@@ -1,5 +1,5 @@
 const { ensureAuthenticated } = require("../middleware/checkAuth");
-const { getSubs, getPosts, decoratePost } = require("../fake-db");
+const { getSubs, getPosts, decoratePost } = require("../db");
 import express from "express";
 // import * as database from "../controller/postController";
 const router = express.Router();

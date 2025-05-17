@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { ensureAuthenticated } from "../middleware/checkAuth";
-import * as db from "../fake-db";
+import * as db from "../db";
 
 router.get("/", async (req, res) => {
   // fetch data 
