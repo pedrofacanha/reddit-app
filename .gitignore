@@ -1,4 +1,29 @@
+# Node dependencies
 node_modules/
-**/*solution*
+
+# Prisma
+generated/
+prisma/dev.db
+prisma/dev.sqlite
+prisma/migrations/  # optional — remove if you want to track schema versions
+
+# Environment variables
 .env
-generated/prisma/
+.env.*  # covers .env.local, .env.test, etc.
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temp and backup files
+*.swp
+*.tmp
+
+# Instructor or solution files
+**/*solution*
