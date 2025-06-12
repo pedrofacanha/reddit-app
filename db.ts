@@ -110,7 +110,7 @@ export async function deletePost(post_id: number) {
   await prisma.post.delete({ where: { id: post_id } })
 }
 
-export async function getSubs(): Promise<string[]> {
+export async function getSubs() {
   const subs = await prisma.post.findMany({
     select: { subgroup: true },
     distinct: ['subgroup']

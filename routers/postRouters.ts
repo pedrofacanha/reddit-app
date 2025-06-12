@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
     const decorated = await db.decoratePost(post);
     decoratedPosts.push(decorated);
   }
-  
+  await db.debug();
   res.render("posts", { user, posts: decoratedPosts });
 });
 
