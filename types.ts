@@ -1,44 +1,21 @@
-import type { Post } from './generated/prisma/client'; 
+import type { Post, User, Comment, Vote } from './generated/prisma/client';
 
 declare global {
   namespace Express {
     interface User {
-      id: number,
-      uname: string,
-      password: string,
+      id: number;
+      uname: string;
+      password: string;
     }
   }
 }
 
-export type TPosts = {
-  [key: number]: {
-    id: number;
-    title: string;
-    link: string;
-    description: string;
-    creator: number;
-    subgroup: string;
-    timestamp: number;
-  };
-};
-
 export type TPost = Post;
+export type TUser = User;
+export type TComment = Comment;
+export type TVote = Vote;
 
-export type TComments = {
-  [key: number]: {
-    id: number;
-    post_id: number;
-    creator: number;
-    description: string;
-    timestamp: number;
-  };
-};
-
-export type TUsers = {
-  [key: number]: { 
-    id: number; 
-    uname: string; 
-    password: string };
-};
-
-export type TVotes = { user_id: number; post_id: number; value: number }[];
+export type TUsers = { [key: number]: TUser };
+export type TPosts = { [key: number]: TPost };
+export type TComments = { [key: number]: TComment };
+export type TVotes = TVote[];
