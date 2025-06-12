@@ -132,3 +132,19 @@ export async function addComment(post_id: number, creator: number, description: 
 export async function deleteComment(commentId: number) {
   await prisma.comment.delete({ where: { id: commentId } })
 }
+
+export async function debug() {
+  console.log("==== DATABASE DEBUGGING START ====");
+
+  const users = await prisma.user.findMany();
+  const posts = await prisma.post.findMany();
+  const comments = await prisma.comment.findMany();
+  const votes = await prisma.vote.findMany();
+
+  console.log("Users:", users);
+  console.log("Posts:", posts);
+  console.log("Comments:", comments);
+  console.log("Votes:", votes);
+
+  console.log("==== DATABASE DEBUGGING END ====");
+}
