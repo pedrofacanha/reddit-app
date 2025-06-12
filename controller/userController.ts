@@ -9,7 +9,7 @@ export const getUserByEmailIdAndPassword = async (
     if (user.password === password) {
       return user;
     } else {
-      return null;
+      return (null);
     }
   }
 };

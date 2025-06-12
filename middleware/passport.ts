@@ -19,7 +19,7 @@ const localLogin = new LocalStrategy(
     // Check if user exists in databse
     const user = await getUserByEmailIdAndPassword(uname, password);
     return user
-      ? done(null, user)
+      ? done(null, {...user, password: user.password ?? ""})
       : done(null, false, {
           message: "Your login details are not valid. Please try again.",
         });
@@ -36,7 +36,7 @@ passport.serializeUser(function (user: Express.User, done: (err: any, id?: numbe
 passport.deserializeUser(async function (id: number, done: (err: any, user?: Express.User | false | null) => void) {
   const user = await getUserById(id);
   if (user) {
-    done(null, user);
+    done(null, {...user, password: user.password ?? ""});
   } else {
     done({ message: "User not found" }, null);
   }
