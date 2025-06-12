@@ -1,3 +1,5 @@
+import type { Post } from './generated/prisma/client'; 
+
 declare global {
   namespace Express {
     interface User {
@@ -20,15 +22,7 @@ export type TPosts = {
   };
 };
 
-export type TPost = {
-  id: number;
-  title: string;
-  link: string;
-  description: string;
-  creator: number;
-  subgroup: string;
-  timestamp: number;
-};
+export type TPost = Post;
 
 export type TComments = {
   [key: number]: {

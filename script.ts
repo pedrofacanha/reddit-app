@@ -3,26 +3,16 @@ import { PrismaClient } from './generated/prisma'
 const prisma = new PrismaClient()
 
 async function main() {
-  const createMany = await prisma.post.createMany({
+  const createMany = await prisma.vote.createMany({
     data: [
-      { title: 'Mochido opens its new location in Coquitlam this week', 
-        link: 'https://dailyhive.com/vancouver/mochido-coquitlam-open', 
-        description: "New mochi donut shop, Mochido, is set to open later this week.", 
-        creatorId: 1,
-        subgroup: "food",
-        timestamp: new Date(1643648446955)
-       },
-      { title: '2023 State of Databases for Serverless & Edge', 
-        link: 'https://leerob.io/blog/backend', 
-        description: "An overview of databases that pair well with modern application and compute providers.", 
-        creatorId: 4,
-        subgroup: "coding",
-        timestamp: new Date(1642611742010)
-       },
-    ]// optional, avoids errors if records already exist
+      { userId: 2, postId: 101, value: +1 },
+      { userId: 3, postId: 101, value: +1 },
+      { userId: 4, postId: 101, value: +1 },
+      { userId: 3, postId: 102, value: -1 },
+    ]
   })
 
-  console.log(`${createMany.count} posts created`)
+  console.log(`${createMany.count} votes created`);
 }
 
 main()

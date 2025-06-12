@@ -1,224 +1,134 @@
-import { TComments, TPost, TPosts, TUsers, TVotes } from "./types";
+import { PrismaClient } from './generated/prisma'
+import { TPost } from "./types"
 
-const users: TUsers = {
-  1: {
-    id: 1,
-    uname: "alice",
-    password: "alpha",
-  },
-  2: {
-    id: 2,
-    uname: "theo",
-    password: "123",
-  },
-  3: {
-    id: 3,
-    uname: "prime",
-    password: "123",
-  },
-  4: {
-    id: 4,
-    uname: "leerob",
-    password: "123",
-  },
-};
+const prisma = new PrismaClient()
 
-const posts: TPosts = {
-  101: {
-    id: 101,
-    title: "Mochido opens its new location in Coquitlam this week",
-    link: "https://dailyhive.com/vancouver/mochido-coquitlam-open",
-    description:
-      "New mochi donut shop, Mochido, is set to open later this week.",
-    creator: 1,
-    subgroup: "food",
-    timestamp: 1643648446955,
-  },
-  102: {
-    id: 102,
-    title: "2023 State of Databases for Serverless & Edge",
-    link: "https://leerob.io/blog/backend",
-    description:
-      "An overview of databases that pair well with modern application and compute providers.",
-    creator: 4,
-    subgroup: "coding",
-    timestamp: 1642611742010,
-  },
-};
-
-const comments: TComments = {
-  9001: {
-    id: 9001,
-    post_id: 102,
-    creator: 1,
-    description: "Actually I learned a lot",
-    timestamp: 1642691742010,
-  },
-  9004: {
-    id: 9004,
-    post_id: 102,
-    creator: 3,
-    description: "Just a mock comment to test",
-    timestamp: 1642691742010,
-  },
-};
-
-const votes: TVotes = [
-  { user_id: 2, post_id: 101, value: +1 },
-  { user_id: 3, post_id: 101, value: +1 },
-  { user_id: 4, post_id: 101, value: +1 },
-  { user_id: 3, post_id: 102, value: -1 },
-];
-
-function debug() {
-  console.log("==== DB DEBUGING ====");
-  console.log("users", users);
-  console.log("posts", posts);
-  console.log("comments", comments);
-  console.log("votes", votes);
-  console.log("==== DB DEBUGING ====");
-}
-function getUser(id: number) {
-  return users[id];
+export async function getPost(id: number) {
+  const post = await prisma.post.findUnique({ where: { id } })
+  if (!post) return null
+  return decoratePost(post)
 }
 
-function getUserByUsername(uname: any) {
-  return getUser(
-    Object.values(users).filter((user) => user.uname === uname)[0].id
-  );
+export async function getPosts(n = 5, sub?: string){
+  const posts = await prisma.post.findMany({
+    where: sub ? { subgroup: sub } : {},
+    orderBy: { timestamp: "desc" },
+    take: n,
+  })
+  return posts;
 }
 
-function getVotesForPost(post_id: number) {
-  return votes.filter((vote) => vote.post_id === post_id);
-}
+export async function decoratePost(post: TPost) {
+  const user = await prisma.user.findUnique({ where: { id: post.creatorId } })
+  const votes = await prisma.vote.findMany({ where: { postId: post.id } })
+  const comments = await prisma.comment.findMany({
+    where: { post_id: post.id },
+    include: { creator: true },
+  })
 
-function updateVote(user_id: number, post_id: number, value: number) {
-  // get current post votes
-  const postVotes = getVotesForPost(post_id);
-
-  // check if user has voted already
-  const hasVoted = postVotes.find(vote => vote.user_id === user_id);
-
-  if (hasVoted) {
-    hasVoted.value = value;
-  } else {
-    votes.push({ user_id, post_id, value });
-  }
-}
-function decoratePost(post: TPost) {
-  const newPost = {
+  return {
     ...post,
-    creator: users[post.creator],
-    votes: getVotesForPost(post.id),
-    comments: Object.values(comments)
-      .filter((comment) => comment.post_id === post.id)
-      .map((comment) => ({ ...comment, creator: users[comment.creator] })),
-  };
-  return newPost;
-}
-/**
- * @param {*} n how many posts to get, defaults to 5
- * @param {*} sub which sub to fetch, defaults to all subs
- */
-function getPosts(n = 5, sub = undefined) {
-  let allPosts = Object.values(posts);
-  if (sub) {
-    allPosts = allPosts.filter((post) => post.subgroup === sub);
+    creator: user,
+    votes,
+    comments,
   }
-  allPosts.sort((a, b) => b.timestamp - a.timestamp);
-  return allPosts.slice(0, n);
 }
 
-function getPost(id: number) {
-  return decoratePost(posts[id]);
+export async function getUser(id: number) {
+  return prisma.user.findUnique({ where: { id } })
 }
 
-function addPost(
+export async function getUserByUsername(uname: string) {
+  return prisma.user.findUnique({ where: { uname } })
+}
+
+export async function updateVote(user_id: number, post_id: number, value: number) {
+  const existing = await prisma.vote.findFirst({
+    where: { userId: user_id, postId: post_id },
+  })
+
+  if (existing) {
+    await prisma.vote.update({
+      where: { id: existing.id },
+      data: { value },
+    })
+  } else {
+    await prisma.vote.create({
+      data: { userId: user_id, postId: post_id, value },
+    })
+  }
+}
+
+export async function getVotesForPost(post_id: number) {
+  return prisma.vote.findMany({ where: { postId: post_id } })
+}
+
+export async function addPost(
   title: string,
   link: string,
   creator: number,
   description: string,
   subgroup: string
 ) {
-  let id = Math.max(...Object.keys(posts).map(Number)) + 1;
-  let post = {
-    id,
-    title,
-    link,
-    description,
-    creator: Number(creator),
-    subgroup,
-    timestamp: Date.now(),
-  };
-  posts[id] = post;
-  return post;
+  const newPost = await prisma.post.create({
+    data: {
+      title,
+      link,
+      creatorId: creator,
+      description,
+      subgroup,
+      timestamp: new Date(),
+    },
+  })
+  return newPost;
 }
 
-function editPost(
+export async function editPost(
   post_id: number,
   changes: {
-    title?: string;
-    link?: string;
-    description?: string;
-    subgroup?: string;
-    timestamp?: number;
+    title?: string
+    link?: string
+    description?: string
+    subgroup?: string
+    timestamp?: number
   } = {}
 ) {
-  let post = posts[post_id];
-  if (changes.title) {
-    post.title = changes.title;
-  }
-  if (changes.link) {
-    post.link = changes.link;
-  }
-  if (changes.description) {
-    post.description = changes.description;
-  }
-  if (changes.subgroup) {
-    post.subgroup = changes.subgroup;
-  }
-  if (changes.timestamp) {
-    post.timestamp = changes.timestamp;
-  }
+  const updateData: any = {}
+  if (changes.title) updateData.title = changes.title
+  if (changes.link) updateData.link = changes.link
+  if (changes.description) updateData.description = changes.description
+  if (changes.subgroup) updateData.subgroup = changes.subgroup
+  if (changes.timestamp) updateData.timestamp = new Date(changes.timestamp)
+
+  await prisma.post.update({
+    where: { id: post_id },
+    data: updateData,
+  })
 }
 
-function deletePost(post_id: number) {
-  delete posts[post_id];
-}
-function deleteComment(commentId: number){
-  delete comments[commentId];
+export async function deletePost(post_id: number) {
+  await prisma.post.delete({ where: { id: post_id } })
 }
 
-function getSubs() {
-  return Array.from(new Set(Object.values(posts).map((post) => post.subgroup)));
+export async function getSubs(): Promise<string[]> {
+  const subs = await prisma.post.findMany({
+    select: { subgroup: true },
+    distinct: ['subgroup']
+  })
+  return subs.map(s => s.subgroup)
 }
 
-function addComment(post_id: number, creator: number, description: string) {
-  let id = Math.max(...Object.keys(comments).map(Number)) + 1;
-  let comment = {
-    id,
-    post_id: post_id,
-    creator: Number(creator),
-    description,
-    timestamp: Date.now(),
-  };
-  comments[id] = comment;
-  return comment;
+export async function addComment(post_id: number, creator: number, description: string) {
+  return await prisma.comment.create({
+    data: {
+      post_id,
+      creatorId: creator,
+      description,
+      timestamp: new Date(),
+    },
+  })
 }
 
-export {
-  debug,
-  getUser,
-  getUserByUsername,
-  getPosts,
-  getPost,
-  getVotesForPost,
-  addPost,
-  editPost,
-  deletePost,
-  getSubs,
-  addComment,
-  decoratePost,
-  deleteComment,
-  updateVote
-};
+export async function deleteComment(commentId: number) {
+  await prisma.comment.delete({ where: { id: commentId } })
+}

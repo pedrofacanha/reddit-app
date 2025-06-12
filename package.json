@@ -4,7 +4,8 @@
   "description": "## Introduction",
   "main": "index.js",
   "scripts": {
-    "start": "tsx watch --env-file .env app.ts"
+    "start": "tsx watch --env-file .env app.ts",
+    "seed": "tsx script.ts"
   },
   "license": "UNLICENSED",
   "dependencies": {
